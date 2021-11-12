@@ -13,8 +13,6 @@ class VotingForTwo:
         a = preferences.iloc[0].value_counts() + preferences.iloc[1].value_counts()
         a = a.fillna(0) # If a candidate isn't in both, set their votes as 0 and not NaN.
         a = a.sort_values(ascending=False)
-        print(a.index)
-        print(list(a))
         most_voted_votes = list(a)[0]
         if most_voted_votes / voterno > 0.5:
             return a.index[0]

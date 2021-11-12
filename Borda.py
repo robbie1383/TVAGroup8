@@ -16,10 +16,8 @@ class BordaVoting:
         outcome_rank = list(rank.keys())
         return outcome_rank
 
-    def get_outcome(self, preferences: pd.DataFrame) -> str:
-        info = np.array(preferences).transpose()[2:].transpose().tolist()
-        outcome = self.outcomeRanking(info)[0]
-        return outcome
+    def outcome(self, preferences: pd.DataFrame) -> str:
+        return self.outcomeRanking(preferences)[0]
 
 """
     # Compute the happiness of all voters based on a given outcome

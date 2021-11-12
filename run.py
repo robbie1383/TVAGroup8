@@ -17,6 +17,27 @@ votingScheme = votingOptions[votingSchemeChoice]
 print("Social Ranking:", votingScheme.outcomeRanking(preferences))
 print("Voting Winner:", votingScheme.outcome(preferences))
 
-
-def happiness(self, preference, outcome: str) -> [float]:
+# Definde happiness function
+def happiness(voter : str, preferences, outcome: [str]) -> [float]:
+    """
+    :param voter: string representing the voted, eg : "Voter 1"
+    :param preferences: pandas dataframe with the voting preferences
+    :param outcome: social ranking, eg : [A, B, C, D]
+    :return:
+    """
     pass
+
+# Define strategic voting function
+def strategicVoting(voter : str, preferences, votingScheme) :
+    """
+    :param voter: string representing the voted, eg : "Voter 1"
+    :param preferences: pandas dataframe with the voting preferences
+    :param votingScheme: initialized voting scheme
+    :return:
+    """
+
+    outcomeRanking = votingScheme.outcomeRanking(preferences)
+    voterRanking = preferences[voter]
+    print(voterRanking)
+
+strategicVoting("Voter 1", preferences, votingScheme)

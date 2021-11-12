@@ -9,8 +9,6 @@ class PluralityVoting:
         prefarray= np.array(preferences)
         prefarray=np.delete(prefarray, [0], 1)
         ranking = dict.fromkeys(preferences.iloc[:,1].values, 0)
-        print(len(prefarray))
-        print(len(prefarray[0]))
         for i in range (len(prefarray[0])):
             ranking[prefarray[0][i]]+=1
         ranking=dict(sorted(ranking.items(),key=operator.itemgetter(1),reverse=True))
