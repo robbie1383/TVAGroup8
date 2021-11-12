@@ -1,6 +1,4 @@
 import pandas as pd
-from collections import Counter
-
 
 class AntiPluralityVoting:
 
@@ -32,32 +30,5 @@ class AntiPluralityVoting:
 
     def outcome(self, preferences: pd.DataFrame) -> str:
         # Compute the final outcome of the vote, eg : A
-
-        #get score and return winner
         score = self.outcomeRanking(preferences)
         return score[0]
-
-    def happiness(self, preference, outcome: str) -> [float]:
-        # Compute the happiness of all voters based on a given outcome
-
-        m = (len(outcome))
-        hapiness = 0
-        for i in range(0,len(preference)):
-            pass
-            # print(preference[i])
-            # print(np.where(outcome == preference[i]))
-        #print(preference)
-        #print(outcome)
-        pass
-
-if __name__ == "__main__":
-    inputFile = "DataSet.csv"  # for future command line IO
-    preferences = pd.read_csv(inputFile)
-
-    votingScheme = AntiPluralityVoting()
-
-    ranking = votingScheme.outcomeRanking(preferences)
-    print("Social Ranking:", ranking)
-    print("Voting Winner:", votingScheme.outcome(preferences))
-    i = 1
-    print("Hapiness for user:", votingScheme.happiness(preferences.iloc[:,i].values, ranking))

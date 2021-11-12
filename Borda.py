@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 
-
 class BordaVoting:
 
     # Compute the social ranking of candidates, eg : [A, B, C, D]
@@ -22,6 +21,7 @@ class BordaVoting:
         outcome = self.outcomeRanking(info)[0]
         return outcome
 
+"""
     # Compute the happiness of all voters based on a given outcome
     def happiness(self, preferences: pd.DataFrame, outcome: [str]) -> [float]:
         info = np.array(preferences).transpose()[2:].transpose().tolist()
@@ -34,11 +34,4 @@ class BordaVoting:
                 happiness_weight = can_num - i
                 happiness[j] = happiness[j] + delta * happiness_weight
         return happiness
-
-
-if __name__ == "__main__":
-    inputFile = "DataSet.csv"  # for future command line IO
-    preferences = pd.read_csv(inputFile)
-    b = BordaVoting()
-    outcome = b.outcomeRanking(preferences)
-    print(b.happiness(preferences, outcome))
+"""

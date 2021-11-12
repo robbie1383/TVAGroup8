@@ -16,3 +16,7 @@ votingScheme = votingOptions[votingSchemeChoice]
 # Compute things
 print("Social Ranking:", votingScheme.outcomeRanking(preferences))
 print("Voting Winner:", votingScheme.outcome(preferences))
+
+
+def happiness(self, preference, outcome: str) -> [float]:
+    pass

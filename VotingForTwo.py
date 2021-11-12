@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 class VotingForTwo:
 
     def outcomeRanking(self, preferences: pd.DataFrame) -> [str]:
@@ -22,8 +21,4 @@ class VotingForTwo:
         else:
             return "None"
 
-        pass
-
-    def happiness(self, preferences: pd.DataFrame, outcome: str) -> [float]:
-        # Compute the happiness of all voters based on a given outcome
         pass

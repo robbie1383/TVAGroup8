@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import operator
+
 class PluralityVoting:
 
     def outcomeRanking(self, preferences: pd.DataFrame) -> [str]:
@@ -19,16 +20,3 @@ class PluralityVoting:
         out=self.outcomeRanking(preferences)
         return list(out)[0]
 
-    def happiness(self, preferences: pd.DataFrame, outcome: str) -> [float]:
-        # Compute the happiness of all voters based on a given outcome
-
-        pass
-
-if __name__ == "__main__":
-    inputFile = "DataSet.csv"  # for future command line IO
-    preferences = pd.read_csv(inputFile)
-    plurality = PluralityVoting()
-    outcomeRank=plurality.outcomeRanking(preferences)
-    print("Outcome preference", outcomeRank)
-    outcome = plurality.outcome(preferences)
-    print("Outcome",outcome)
