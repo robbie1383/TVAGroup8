@@ -15,6 +15,7 @@ class PluralityVoting:
         return ranking.keys()
 
     def outcome(self, preferences: pd.DataFrame) -> str:
+        # Compute the final outcome of the vote, eg : A
         out=self.outcomeRanking(preferences)
         return list(out)[0]
 

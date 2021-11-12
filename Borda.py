@@ -3,8 +3,8 @@ import numpy as np
 
 class BordaVoting:
 
-    # Compute the social ranking of candidates, eg : [A, B, C, D]
     def outcomeRanking(self, preferences: pd.DataFrame) -> [str]:
+        # Compute the social ranking of candidates, eg : [A, B, C, D]
         rank = {}
         info = np.array(preferences).transpose()[2:].transpose().tolist()
         for num_candidates in range(len(info)):
@@ -17,6 +17,7 @@ class BordaVoting:
         return outcome_rank
 
     def outcome(self, preferences: pd.DataFrame) -> str:
+        # Compute the final outcome of the vote, eg : A
         return self.outcomeRanking(preferences)[0]
 
 """

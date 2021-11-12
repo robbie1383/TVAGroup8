@@ -1,4 +1,5 @@
 import pandas as pd
+import itertools
 from Borda import BordaVoting
 from PluralityVoting import PluralityVoting
 from VotingForTwo import VotingForTwo
@@ -13,18 +14,24 @@ votingOptions = [BordaVoting(), PluralityVoting(), AntiPluralityVoting(), Voting
 votingSchemeChoice = 0  # for future command line IO
 votingScheme = votingOptions[votingSchemeChoice]
 
-# Compute things
-print("Social Ranking:", votingScheme.outcomeRanking(preferences))
-print("Voting Winner:", votingScheme.outcome(preferences))
-
-# Definde happiness function
-def happiness(voter : str, preferences, outcome: [str]) -> [float]:
+# Define happiness function
+def happiness(voter : str, preferences, outcome: [str]) -> float:
     """
     :param voter: string representing the voted, eg : "Voter 1"
     :param preferences: pandas dataframe with the voting preferences
     :param outcome: social ranking, eg : [A, B, C, D]
+    :return: the happiness of a given voter with a given outcome
+    """
+    pass
+
+# Define overall happiness
+def overallHappiness(preferences, outcome: [str]) -> float:
+    """
+    :param preferences: pandas dataframe with the voting preferences
+    :param outcome: social ranking, eg : [A, B, C, D]
     :return:
     """
+    # sum the happiness of all individual voters
     pass
 
 # Define strategic voting function
@@ -33,11 +40,22 @@ def strategicVoting(voter : str, preferences, votingScheme) :
     :param voter: string representing the voted, eg : "Voter 1"
     :param preferences: pandas dataframe with the voting preferences
     :param votingScheme: initialized voting scheme
-    :return:
+    :return: a strategic voting option of the form :
+             [newVoterRanking, outcome, newHappiness, newOverallHappiness, trueOverallHappiness]
     """
-
-    outcomeRanking = votingScheme.outcomeRanking(preferences)
     voterRanking = preferences[voter]
-    print(voterRanking)
+    permutations = list(itertools.permutations(list(voterRanking)))
+    strategies = []
+    for alternative in permutations:
+        newPreferences = preferences.copy()
+        newPreferences[voter] = alternative
+        outcomeRanking = votingScheme.outcomeRanking(newPreferences)
+        option = [alternative, votingScheme.outcome(newPreferences), happiness(voter, newPreferences, outcomeRanking), overallHappiness(newPreferences, outcomeRanking), overallHappiness(preferences, outcomeRanking)]
+        strategies.append(option)
+    return strategies
 
-strategicVoting("Voter 1", preferences, votingScheme)
+
+# TEST THINGS HERE
+print("Social Ranking:", votingScheme.outcomeRanking(preferences))
+print("Voting Winner:", votingScheme.outcome(preferences))
+print(strategicVoting("Voter 1", preferences, votingScheme))
