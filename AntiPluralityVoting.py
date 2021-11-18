@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 class AntiPluralityVoting:
 
     def outcomeRanking(self, preferences: pd.DataFrame) -> [str]:
@@ -7,14 +8,14 @@ class AntiPluralityVoting:
 
         # initializer a ranking dictionary with zeros ( preferences are found in the first voter)
 
-        #initializer ranking dictionary with zeros
-        ranking = dict.fromkeys(preferences.iloc[:,1].values, 0) #start from 1 because 1 is preference
+        # initializer ranking dictionary with zeros
+        ranking = dict.fromkeys(preferences.iloc[:, 1].values, 0)  # start from 1 because 1 is preference
 
         # dictionary with scores
         first = True
         for voter in preferences._iter_column_arrays():
             if first:
-                first=False
+                first = False
                 continue
             for i in range(len(voter) - 1):
                 ranking[voter[i]] += 1
@@ -22,8 +23,7 @@ class AntiPluralityVoting:
         # sort first by score then alphabetically
         '''Note that we have here a sorted dictionary. It might become very usefull in the future'''
         ranking = dict(sorted(ranking.items(), key=lambda x: (-x[1], x[0]), reverse=False))
-
-        #get only the preferences and not the equivalent votes
+        # get only the preferences and not the equivalent votes
         outcomeRanking = list(ranking.keys())
 
         return outcomeRanking
