@@ -4,21 +4,22 @@ from Borda import BordaVoting
 from PluralityVoting import PluralityVoting
 from VotingForTwo import VotingForTwo
 from AntiPluralityVoting import AntiPluralityVoting
+from Sequential import Sequential
 
 # Read the input from the .csv file.
 inputFile = "example.csv"  # for future command line IO
 preferences = pd.read_csv(inputFile)
 # Choose the voting scheme
 votingOptions = [BordaVoting(), PluralityVoting(),
-                 AntiPluralityVoting(), VotingForTwo()]
-votingSchemeChoice = 0  # for future command line IO
+                 AntiPluralityVoting(), VotingForTwo(), Sequential()]
+votingSchemeChoice = 4  # for future command line IO
 votingScheme = votingOptions[votingSchemeChoice]
 
 # Define happiness function
 happinessMetricOptions = 0  # for future command line IO  0 = Steep, 1 = Middle, 2 = Linear ect...
 
 
-def happiness(voter: str, preferences, outcome: [str], happinessMetric: int) -> float:
+def happiness(voter: str, preferences, outcome: str, happinessMetric: int) -> float:
     """
     :param voter: string representing the voted, eg : "Voter 1"  *Giannis comment - Why string and not index value?
     :param preferences: pandas dataframe with the voting preferences
@@ -26,9 +27,9 @@ def happiness(voter: str, preferences, outcome: [str], happinessMetric: int) -> 
     :return: the happiness of a given voter with a given outcome
     """
     preferencesVoter = preferences[voter].tolist()
-    m = len(outcome)
+    m = len(preferencesVoter)
     # calculate how many steps the winner is removed from the current voter's preference list
-    s = preferencesVoter.index(outcome[0])
+    s = preferencesVoter.index(outcome)
 
     if happinessMetric == 0:  # steep curve and is halved for every step of removal.
         return m / ((2 ** s) * m)
@@ -43,7 +44,7 @@ def happiness(voter: str, preferences, outcome: [str], happinessMetric: int) -> 
 
 
 # Define overall happiness
-def overallHappiness(preferences, outcome: [str], happinessMetric) -> float:
+def overallHappiness(preferences, outcome: str, happinessMetric) -> float:
     """
     :param preferences: pandas dataframe with the voting preferences
     :param outcome: social ranking, eg : [A, B, C, D]
@@ -105,9 +106,9 @@ def analyze_risks(preferences):
 
 
 # TEST THINGS HERE
-print("Social Ranking:", votingScheme.outcomeRanking(preferences))
+#print("Social Ranking:", votingScheme.outcomeRanking(preferences))
 print("Voting Winner:", votingScheme.outcome(preferences))
 # print(strategicVoting("Voter 1", preferences, votingScheme))
 print("Happiness of voters :",
-      overallHappiness(preferences, votingScheme.outcomeRanking(preferences), happinessMetricOptions))
-print("Risks  :", analyze_risks(preferences))
+      overallHappiness(preferences, votingScheme.outcome(preferences), happinessMetricOptions))
+#print("Risks  :", analyze_risks(preferences))

@@ -6,11 +6,8 @@ class AntiPluralityVoting:
     def outcomeRanking(self, preferences: pd.DataFrame) -> [str]:
         # Compute the social ranking of candidates, eg : [A, B, C, D]
 
-        # initializer a ranking dictionary with zeros ( preferences are found in the first voter)
-
-        # initializer ranking dictionary with zeros
+        # initialize a ranking dictionary with zeros ( preferences are found in the first voter)
         ranking = dict.fromkeys(preferences.iloc[:, 1].values, 0)  # start from 1 because 1 is preference
-
         # dictionary with scores
         first = True
         for voter in preferences._iter_column_arrays():
