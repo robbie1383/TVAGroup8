@@ -1,12 +1,13 @@
 import pandas as pd
 import numpy as np
 
+
 class BordaVoting:
 
+    # Compute the social ranking of candidates, eg : [A, B, C, D]
     def outcomeRanking(self, preferences: pd.DataFrame) -> [str]:
-        # Compute the social ranking of candidates, eg : [A, B, C, D]
         rank = {}
-        info = np.array(preferences).transpose()[2:].transpose().tolist()
+        info = np.array(preferences).transpose()[1:].transpose().tolist()
         for num_candidates in range(len(info)):
             for candidate in info[num_candidates]:
                 if candidate in rank.keys():
@@ -16,21 +17,6 @@ class BordaVoting:
         outcome_rank = list(rank.keys())
         return outcome_rank
 
+    # Compute the final outcome of the vote, eg : A
     def outcome(self, preferences: pd.DataFrame) -> str:
-        # Compute the final outcome of the vote, eg : A
         return self.outcomeRanking(preferences)[0]
-
-"""
-    # Compute the happiness of all voters based on a given outcome
-    def happiness(self, preferences: pd.DataFrame, outcome: [str]) -> [float]:
-        info = np.array(preferences).transpose()[2:].transpose().tolist()
-        can_num = len(info)
-        voter_num = len(info[0])
-        happiness = [0 for i in range(voter_num)]
-        for i in range(can_num):
-            for j in range(voter_num):
-                delta = i - outcome.index(info[i][j])
-                happiness_weight = can_num - i
-                happiness[j] = happiness[j] + delta * happiness_weight
-        return happiness
-"""
