@@ -1,3 +1,5 @@
+import operator
+
 import pandas as pd
 import numpy as np
 
@@ -6,15 +8,16 @@ class BordaVoting:
 
     # Compute the social ranking of candidates, eg : [A, B, C, D]
     def outcomeRanking(self, preferences: pd.DataFrame) -> [str]:
-        rank = {}
-        info = np.array(preferences).transpose()[1:].transpose().tolist()
+        ranking = {}
+        info = np.array(preferences)
         for num_candidates in range(len(info)):
             for candidate in info[num_candidates]:
-                if candidate in rank.keys():
-                    rank[candidate] += rank[candidate] + len(info) - num_candidates
+                if candidate in ranking.keys():
+                    ranking[candidate] += ranking[candidate] + len(info) - num_candidates
                 else:
-                    rank[candidate] = len(info) - num_candidates
-        outcome_rank = list(rank.keys())
+                    ranking[candidate] = len(info) - num_candidates
+        ranking = dict(sorted(ranking.items(), key=operator.itemgetter(1), reverse=True))
+        outcome_rank = list(ranking.keys())
         return outcome_rank
 
     # Compute the final outcome of the vote, eg : A
