@@ -34,3 +34,10 @@ class Sequential:
             if count < 0:
                 previous = opponent
         return previous
+
+    def outcomeRanking(self, preferences: pd.DataFrame) -> [str]:
+        print("Sequential Voting does not support social ranking computations. Only the winner will be displayed.")
+        return [self.outcome(preferences)]
+
+    def toString(self):
+        return "Sequential Voting Scheme"

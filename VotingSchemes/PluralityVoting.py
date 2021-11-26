@@ -19,3 +19,6 @@ class PluralityVoting:
         # Compute the final outcome of the vote, eg : A
         out = self.outcomeRanking(preferences)
         return list(out)[0]
+
+    def toString(self):
+        return "Plurality Voting Scheme"

@@ -23,3 +23,6 @@ class BordaVoting:
     # Compute the final outcome of the vote, eg : A
     def outcome(self, preferences: pd.DataFrame) -> str:
         return self.outcomeRanking(preferences)[0]
+
+    def toString(self):
+        return "Borda Voting Scheme"
