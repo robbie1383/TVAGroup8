@@ -91,19 +91,21 @@ def risk(voter : str, preferences, votingScheme, happinessMetric : int, ):
 
 def inputChecker(preferences) :
     n = len(preferences.index)
+    options = [chr(ord("A") + i) for i in range(n)]
     for column in preferences.columns:
         if "Voter " not in column :
-            print("\nColumn names are not specified correctly. Use <Voter n> for the column names.\n")
+            print("\nColumn name <<", column, ">> is not specified correctly. Use <<Voter n>> for the column names.\n")
             return False
-        ranking = preferences[column]
-        goodRanking = []
-        for element in ranking:
-            if element is None or ord('A') <= ord(element) <= ord('A') + n - 1:
-                goodRanking.append(element)
-        if len(goodRanking) != len(ranking) :
-            print("\nSome rankings are missing options.")
-            return False
-
+        optionsCopy = options.copy()
+        for element in preferences[column]:
+            if pd.isnull(element):
+                print("\nColumn name <<", column, ">> contains an empty rating.\n")
+                return False
+            if element in optionsCopy:
+                optionsCopy.remove(element)
+            else :
+                print("\nColumn name <<", column, ">> contains two votes for candidate", element, ".\n")
+                return False
     return True
 
 def inputPreferences():
@@ -211,7 +213,7 @@ def main():
                 print("This voter does not exist.")
             else :
                 print("The strategic voting options for this voter are :")
-                print("[newVoterRanking, outcome, trueHappiness, newHappiness, newOverallHappiness, trueOverallHappiness]")
+                print("[newVoterRanking, newOutcome, trueHappiness, newHappiness, newOverallHappiness, trueOverallHappiness]")
                 strategies = strategicVoting(voter, preferences, votingScheme, happinessChoice)
                 for s in strategies: print(s)
 
