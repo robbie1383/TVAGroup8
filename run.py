@@ -89,9 +89,7 @@ def risk(voter : str, preferences, votingScheme, happinessMetric : int, ):
     return overall_risk_count / overall_strategy_voting_options
 
 
-def main():
-    print("Welcome to the voting simulator.")
-
+def inputPreferences():
     # Read the input from the .csv file.
     print("This software uses .csv files as input. Please enter the name of your file as <name>.csv below.")
     print("If you wish to use the pre-defined example, press Enter.")
@@ -101,7 +99,9 @@ def main():
     preferences = pd.read_csv(inputFile)
     print("\nPreview of the file used:")
     print(preferences.head(5))
+    return preferences
 
+def inputVotingScheme():
     # Choose the voting scheme
     votingOptions = [BordaVoting(), PluralityVoting(), AntiPluralityVoting(), VotingForTwo(), Sequential()]
     print("\nSelect one of the voting schemes below by entering its number id.")
@@ -112,10 +112,12 @@ def main():
     while not (votingSchemeChoice in "01234" or len(votingSchemeChoice) == 0):
         votingSchemeChoice = input(">> ")
 
-    if len(votingSchemeChoice) == 0 : votingSchemeChoice = randrange(5)
+    if len(votingSchemeChoice) == 0: votingSchemeChoice = randrange(5)
     votingScheme = votingOptions[int(votingSchemeChoice)]
     print("\nVoting scheme selected is", votingScheme.toString())
+    return votingScheme
 
+def inputHappiness():
     # Choose happiness function
     print("\nSelect what kind of happiness function you want to use by entering its number id.")
     print("0 : Steep curve happiness : ")
@@ -125,14 +127,16 @@ def main():
     happinessChoice = "start"
     while not (happinessChoice in "012" or len(happinessChoice) == 0):
         happinessChoice = input(">> ")
-    if len(happinessChoice) ==  0 :
+    if len(happinessChoice) == 0:
         happinessChoice = randrange(3)
     happinessChoice = int(happinessChoice)
-    if happinessChoice == 0 : print("\nHappiness function selected uses a steep curve.")
-    if happinessChoice == 1 : print("\nHappiness function selected uses a linear curve.")
-    if happinessChoice == 2 : print("\nHappiness function selected uses a middle curve.")
+    if happinessChoice == 0: print("\nHappiness function selected uses a steep curve.")
+    if happinessChoice == 1: print("\nHappiness function selected uses a linear curve.")
+    if happinessChoice == 2: print("\nHappiness function selected uses a middle curve.")
+    return happinessChoice
 
-    # Create commands
+
+def createCommands(votingScheme):
     options = "help0123456"
     commands = "\nSelect one of the commands below by selecting its number id."
     commands += "\n0 : Quit the program."
@@ -147,7 +151,18 @@ def main():
         commands += "7 : Update the voting agenda."
     commands += "\nhelp : Prints a list of all the commands."
 
-    # Implement command loop
+    return options, commands
+
+def main():
+    print("Welcome to the voting simulator.")
+
+    # Set scenario parameters
+    preferences = inputPreferences()
+    votingScheme = inputVotingScheme()
+    happinessChoice = inputHappiness()
+
+    # Command loop
+    options, commands = createCommands(votingScheme)
     print(commands)
     command = input("\n>> ")
     while command != "0":
