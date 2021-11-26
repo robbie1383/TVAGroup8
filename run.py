@@ -89,17 +89,40 @@ def risk(voter : str, preferences, votingScheme, happinessMetric : int, ):
     return overall_risk_count / overall_strategy_voting_options
 
 
+def inputChecker(preferences) :
+    n = len(preferences.index)
+    for column in preferences.columns:
+        if "Voter " not in column :
+            print("\nColumn names are not specified correctly. Use <Voter n> for the column names.\n")
+            return False
+        ranking = preferences[column]
+        goodRanking = []
+        for element in ranking:
+            if element is None or ord('A') <= ord(element) <= ord('A') + n - 1:
+                goodRanking.append(element)
+        if len(goodRanking) != len(ranking) :
+            print("\nSome rankings are missing options.")
+            return False
+
+    return True
+
 def inputPreferences():
     # Read the input from the .csv file.
-    print("This software uses .csv files as input. Please enter the name of your file as <name>.csv below.")
-    print("If you wish to use the pre-defined example, press Enter.")
-    inputFile = input(">> ")
-    if len(inputFile) == 0:
-        inputFile = "example.csv"
-    preferences = pd.read_csv(inputFile)
+    correct = False
+    while not correct :
+        print("This software uses .csv files as input. Please enter the name of your file as <name>.csv below.")
+        print("If you wish to use the pre-defined example, press Enter.")
+        inputFile = input(">> ")
+        if len(inputFile) == 0:
+            inputFile = "example.csv"
+        preferences = pd.read_csv(inputFile)
+        check = inputChecker(preferences)
+        if check : correct = True
+        else : print("Input file contains problems. Try again.")
     print("\nPreview of the file used:")
     print(preferences.head(5))
     return preferences
+
 
 def inputVotingScheme():
     # Choose the voting scheme
@@ -236,6 +259,7 @@ def main():
         command = input("\n>> ")
 
     print("Simulation ended.")
+
 
 if __name__ == "__main__":
     main()
