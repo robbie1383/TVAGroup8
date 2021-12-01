@@ -17,3 +17,5 @@ class VotingForTwo:
         outcome = self.outcomeRanking(preferences)
         return outcome[0]
 
+    def toString(self):
+        return "Voting for Two Scheme"
