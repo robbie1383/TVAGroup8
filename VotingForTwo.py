@@ -6,6 +6,8 @@ class VotingForTwo:
     def outcomeRanking(self, preferences: pd.DataFrame) -> [str]:
         # Compute the social ranking of candidates, eg : [A, B, C, D]
 
+        # Bug NEEDS FIXING - Giannis
+
         voterno = preferences.shape[1]
         # In case NO VOTES were cast for a specific candidate in either of the two preferences,
         # there's an error, as the series cannot include an index value not present in both
