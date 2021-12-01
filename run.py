@@ -84,7 +84,7 @@ def risk(voter : str, preferences, votingScheme, happinessMetric : int, ):
     for strategy in strategies:
         overall_strategy_voting_options += 1
         # risk happen if the new overall happiness reduced by the strategy voting
-        if (strategy[4] < strategy[5]) & (strategy[2] < strategy[3]):
+        if (strategy[4] < strategy[5]) & (strategy[2] > strategy[3]):
             overall_risk_count += 1
     return overall_risk_count / overall_strategy_voting_options
 
