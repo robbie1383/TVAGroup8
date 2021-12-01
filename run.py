@@ -31,7 +31,7 @@ def happiness(voter: str, preferences, outcome, happinessMetric: int) -> float:
             return ((nrOutcomes - winnerRank) * 0.5) / nrOutcomes
 
 
-def overallHappiness(preferences, outcome, happinessMetric : int) -> float:
+def overallHappiness(preferences, outcome, happinessMetric: int) -> float:
     """
     :param preferences: pandas dataframe with the voting preferences
     :param outcome: a candidate that won some election
@@ -44,7 +44,7 @@ def overallHappiness(preferences, outcome, happinessMetric : int) -> float:
     return sum
 
 
-def strategicVoting(voter: str, preferences, votingScheme, happinessMetric : int):
+def strategicVoting(voter: str, preferences, votingScheme, happinessMetric: int):
     """
     :param voter: string representing the voted, eg : "Voter 1"
     :param preferences: pandas dataframe with the voting preferences
@@ -54,6 +54,7 @@ def strategicVoting(voter: str, preferences, votingScheme, happinessMetric : int
              [newVoterRanking, outcome, trueHappiness, newHappiness,
                  newOverallHappiness, trueOverallHappiness]
     """
+    old_outcome = votingScheme.outcome(preferences)  # get old outcome and keep it
     voterRanking = preferences[voter]
     permutations = list(itertools.permutations(list(voterRanking)))
     strategies = []
@@ -62,15 +63,19 @@ def strategicVoting(voter: str, preferences, votingScheme, happinessMetric : int
         newPreferences[voter] = alternative
         outcome = votingScheme.outcome(newPreferences)
         option = [alternative, outcome,
+                  # real happiness for voter i
+                  happiness(voter, preferences, old_outcome, happinessMetric),
+                  # cheating happiness for voter i
                   happiness(voter, preferences, outcome, happinessMetric),
-                  happiness(voter, newPreferences, outcome, happinessMetric),
-                  overallHappiness(newPreferences, outcome, happinessMetric),
+                  # old overallHappiness
+                  overallHappiness(preferences, old_outcome, happinessMetric),
+                  # new overallHappiness
                   overallHappiness(preferences, outcome, happinessMetric)]
         strategies.append(option)
     return strategies
 
 
-def risk(voter : str, preferences, votingScheme, happinessMetric : int, ):
+def risk(voter: str, preferences, votingScheme, happinessMetric: int, ):
     """
     :param voter: string representing the voted, eg : "Voter 1"
     :param preferences: pandas dataframe with the voting preferences
@@ -83,17 +88,18 @@ def risk(voter : str, preferences, votingScheme, happinessMetric : int, ):
     strategies = strategicVoting(voter, preferences, votingScheme, happinessMetric)
     for strategy in strategies:
         overall_strategy_voting_options += 1
-        # risk happen if the new overall happiness reduced by the strategy voting
-        if (strategy[4] < strategy[5]) & (strategy[2] > strategy[3]):
+        # risk happen if the new overall happiness reduced by the strategy voting while the new happiness of
+        # voter who takes strategicVoting increase
+        if (strategy[4] > strategy[5]) & (strategy[2] < strategy[3]):
             overall_risk_count += 1
     return overall_risk_count / overall_strategy_voting_options
 
 
-def inputChecker(preferences) :
+def inputChecker(preferences):
     n = len(preferences.index)
     options = [chr(ord("A") + i) for i in range(n)]
     for column in preferences.columns:
-        if "Voter " not in column :
+        if "Voter " not in column:
             print("\nColumn name <<", column, ">> is not specified correctly. Use <<Voter n>> for the column names.\n")
             return False
         optionsCopy = options.copy()
@@ -103,15 +109,16 @@ def inputChecker(preferences) :
                 return False
             if element in optionsCopy:
                 optionsCopy.remove(element)
-            else :
+            else:
                 print("\nColumn name <<", column, ">> contains two votes for candidate", element, ".\n")
                 return False
     return True
 
+
 def inputPreferences():
     # Read the input from the .csv file.
     correct = False
-    while not correct :
+    while not correct:
         print("This software uses .csv files as input. Please enter the name of your file as <name>.csv below.")
         print("If you wish to use the pre-defined example, press Enter.")
         inputFile = input(">> ")
@@ -119,8 +126,10 @@ def inputPreferences():
             inputFile = "example.csv"
         preferences = pd.read_csv(inputFile)
         check = inputChecker(preferences)
-        if check : correct = True
-        else : print("Input file contains problems. Try again.")
+        if check:
+            correct = True
+        else:
+            print("Input file contains problems. Try again.")
     print("\nPreview of the file used:")
     print(preferences.head(5))
     return preferences
@@ -141,6 +150,7 @@ def inputVotingScheme():
     votingScheme = votingOptions[int(votingSchemeChoice)]
     print("\nVoting scheme selected is", votingScheme.toString())
     return votingScheme
+
 
 def inputHappiness():
     # Choose happiness function
@@ -178,6 +188,7 @@ def createCommands(votingScheme):
 
     return options, commands
 
+
 def main():
     print("Welcome to the voting simulator.")
 
@@ -209,11 +220,12 @@ def main():
             print("Enter the number id of the voter you want to use.")
             voter = input(">> ")
             voter = "Voter " + voter
-            if voter not in preferences.columns :
+            if voter not in preferences.columns:
                 print("This voter does not exist.")
-            else :
+            else:
                 print("The strategic voting options for this voter are :")
-                print("[newVoterRanking, newOutcome, trueHappiness, newHappiness, newOverallHappiness, trueOverallHappiness]")
+                print(
+                    "[newVoterRanking, newOutcome, trueHappiness, newHappiness, newOverallHappiness, trueOverallHappiness]")
                 strategies = strategicVoting(voter, preferences, votingScheme, happinessChoice)
                 for s in strategies: print(s)
 
@@ -227,7 +239,7 @@ def main():
                     list.append(happiness(v, preferences, outcome, happinessChoice))
                 print(preferences.columns.tolist())
                 print(list)
-            else :
+            else:
                 voter = "Voter " + voter
                 if voter not in preferences.columns:
                     print("This voter does not exist.")
