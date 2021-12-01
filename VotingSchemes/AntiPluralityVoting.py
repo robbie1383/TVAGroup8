@@ -29,3 +29,6 @@ class AntiPluralityVoting:
         # Compute the final outcome of the vote, eg : A
         score = self.outcomeRanking(preferences)
         return score[0]
+
+    def toString(self):
+        return "Anti-Plurality Voting Scheme"
