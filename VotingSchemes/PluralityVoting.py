@@ -8,7 +8,6 @@ class PluralityVoting:
     def outcomeRanking(self, preferences: pd.DataFrame) -> [str]:
         # Compute the social ranking of candidates, eg : [A, B, C, D]
         prefarray = np.array(preferences)
-        prefarray = np.delete(prefarray, [0], 1)
         ranking = dict.fromkeys(preferences.iloc[:, 1].values, 0)
         for i in range(len(prefarray[0])):
             ranking[prefarray[0][i]] += 1
