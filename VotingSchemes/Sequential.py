@@ -8,7 +8,11 @@ class Sequential:
 
     def setAgenda(self, agenda : [str]):
         # Set the agenda
+        if len(pd.Series(agenda)[pd.Series(agenda).duplicated()].values) > 0 :
+            print("Agenda contains duplicates")
+            return False
         self.agenda = agenda
+        return True
 
     def randomAgenda(self, preferences: pd.DataFrame) -> [str]:
         # Create a random agenda from the candidates specified in the preferences

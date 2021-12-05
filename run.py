@@ -181,9 +181,9 @@ def createCommands(votingScheme):
     commands += "\n4 : Print the happiness of some voter or all voters."
     commands += "\n5 : Print the overall happiness of this scenario."
     commands += "\n6 : Print the risk of strategic voting for some voter."
-    if type(votingScheme) is Sequential:
+    if votingScheme.toString() == "Sequential Voting Scheme":
         options += "7"
-        commands += "7 : Update the voting agenda."
+        commands += "\n7 : Update the voting agenda."
     commands += "\nhelp : Prints a list of all the commands."
 
     return options, commands
@@ -234,11 +234,11 @@ def main():
             voter = input(">> ")
             outcome = votingScheme.outcome(preferences)
             if voter == "all":
-                list = []
+                h = []
                 for v in preferences.columns:
-                    list.append(happiness(v, preferences, outcome, happinessChoice))
+                    h.append(happiness(v, preferences, outcome, happinessChoice))
                 print(preferences.columns.tolist())
-                print(list)
+                print(h)
             else:
                 voter = "Voter " + voter
                 if voter not in preferences.columns:
@@ -255,13 +255,12 @@ def main():
         if command == "6":
             print("Enter the number id of the voter you want to use. Enter <all> to get a list of all.")
             voter = input(">> ")
-            outcome = votingScheme.outcome(preferences)
             if voter == "all":
-                list = []
+                h = []
                 for v in preferences.columns:
-                    list.append(risk(v, preferences, votingScheme, happinessChoice))
+                    h .append(risk(v, preferences, votingScheme, happinessChoice))
                 print(preferences.columns.tolist())
-                print(list)
+                print(h)
             else:
                 voter = "Voter " + voter
                 if voter not in preferences.columns:
@@ -269,6 +268,16 @@ def main():
                 else:
                     print("The risk of strategic voting for", voter, "is :")
                     print(risk(voter, preferences, votingScheme, happinessChoice))
+
+        if command == "7":
+            if type(votingScheme) is Sequential:
+                print("Enter the new agenda as <<A, B, C, D>>.")
+                agenda = input(">> ")
+                check = votingScheme.setAgenda(agenda.split(', '))
+                if check :
+                    print("Voting agenda set to:", votingScheme.agenda)
+            else:
+                print("Command", command, "is not supported. Use <help> for a list of commands.")
 
         command = input("\n>> ")
 
