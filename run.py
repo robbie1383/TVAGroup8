@@ -52,7 +52,7 @@ def strategicVoting(voter: str, preferences, votingScheme, happinessMetric: int)
     :param happinessMetric: happiness function calculation scheme
     :return: a strategic voting option of the form :
              [newVoterRanking, outcome, trueHappiness, newHappiness,
-                 newOverallHappiness, trueOverallHappiness]
+                 trueOverallHappiness, newOverallHappiness]
     """
     old_outcome = votingScheme.outcome(
         preferences)  # get old outcome and keep it
@@ -64,13 +64,9 @@ def strategicVoting(voter: str, preferences, votingScheme, happinessMetric: int)
         newPreferences[voter] = alternative
         outcome = votingScheme.outcome(newPreferences)
         option = [alternative, outcome,
-                  # real happiness for voter i
                   happiness(voter, preferences, old_outcome, happinessMetric),
-                  # cheating happiness for voter i
                   happiness(voter, preferences, outcome, happinessMetric),
-                  # old overallHappiness
                   overallHappiness(preferences, old_outcome, happinessMetric),
-                  # new overallHappiness
                   overallHappiness(preferences, outcome, happinessMetric)]
         strategies.append(option)
     return strategies
@@ -222,7 +218,7 @@ def main():
 
         if command == "1":
             print("Social ranking of this scenario is :")
-            print(votingScheme.outcomeRanking(preferences))
+            print(votingScheme.outputScores(preferences))
 
         if command == "2":
             print("Winning candidate in this scenario is :")
@@ -237,7 +233,7 @@ def main():
             else:
                 print("The strategic voting options for this voter are :")
                 print(
-                    "[newVoterRanking, newOutcome, trueHappiness, newHappiness, trueOverallHappiness, newOverallHappiness]")
+                    "newVoterRanking, newOutcome, trueHappiness, newHappiness, trueOverallHappiness, newOverallHappiness")
                 strategies = strategicVoting(
                     voter, preferences, votingScheme, happinessChoice)
                 for s in strategies:
