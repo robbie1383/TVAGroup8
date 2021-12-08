@@ -237,7 +237,7 @@ def main():
             else:
                 print("The strategic voting options for this voter are :")
                 print(
-                    "[newVoterRanking, newOutcome, trueHappiness, newHappiness, newOverallHappiness, trueOverallHappiness]")
+                    "[newVoterRanking, newOutcome, trueHappiness, newHappiness, trueOverallHappiness, newOverallHappiness]")
                 strategies = strategicVoting(
                     voter, preferences, votingScheme, happinessChoice)
                 for s in strategies:
