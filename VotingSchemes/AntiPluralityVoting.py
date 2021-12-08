@@ -31,4 +31,4 @@ class AntiPluralityVoting:
         return score[0]
 
     def toString(self):
-        return "Anti Plurality Voting Scheme
+        return "Anti Plurality Voting Scheme"
