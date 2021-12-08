@@ -13,9 +13,9 @@ class BordaVoting:
         for num_candidates in range(len(info)):
             for candidate in info[num_candidates]:
                 if candidate in ranking.keys():
-                    ranking[candidate] += ranking[candidate] + len(info) - num_candidates
+                    ranking[candidate] += len(info) - num_candidates - 1
                 else:
-                    ranking[candidate] = len(info) - num_candidates
+                    ranking[candidate] = len(info) - num_candidates - 1
         ranking = dict(sorted(ranking.items(), key=operator.itemgetter(1), reverse=True))
         return ranking
 
