@@ -54,7 +54,8 @@ def strategicVoting(voter: str, preferences, votingScheme, happinessMetric: int)
              [newVoterRanking, outcome, trueHappiness, newHappiness,
                  newOverallHappiness, trueOverallHappiness]
     """
-    old_outcome = votingScheme.outcome(preferences)  # get old outcome and keep it
+    old_outcome = votingScheme.outcome(
+        preferences)  # get old outcome and keep it
     voterRanking = preferences[voter]
     permutations = list(itertools.permutations(list(voterRanking)))
     strategies = []
@@ -85,7 +86,8 @@ def risk(voter: str, preferences, votingScheme, happinessMetric: int, ):
     """
     overall_risk_count = 0
     overall_strategy_voting_options = 0
-    strategies = strategicVoting(voter, preferences, votingScheme, happinessMetric)
+    strategies = strategicVoting(
+        voter, preferences, votingScheme, happinessMetric)
     for strategy in strategies:
         overall_strategy_voting_options += 1
         # risk happen if the new overall happiness reduced by the strategy voting while the new happiness of
@@ -100,17 +102,20 @@ def inputChecker(preferences):
     options = [chr(ord("A") + i) for i in range(n)]
     for column in preferences.columns:
         if "Voter " not in column:
-            print("\nColumn name <<", column, ">> is not specified correctly. Use <<Voter n>> for the column names.\n")
+            print("\nColumn name <<", column,
+                  ">> is not specified correctly. Use <<Voter n>> for the column names.\n")
             return False
         optionsCopy = options.copy()
         for element in preferences[column]:
             if pd.isnull(element):
-                print("\nColumn name <<", column, ">> contains an empty rating.\n")
+                print("\nColumn name <<", column,
+                      ">> contains an empty rating.\n")
                 return False
             if element in optionsCopy:
                 optionsCopy.remove(element)
             else:
-                print("\nColumn name <<", column, ">> contains two votes for candidate", element, ".\n")
+                print("\nColumn name <<", column,
+                      ">> contains two votes for candidate", element, ".\n")
                 return False
     return True
 
@@ -137,7 +142,8 @@ def inputPreferences():
 
 def inputVotingScheme():
     # Choose the voting scheme
-    votingOptions = [BordaVoting(), PluralityVoting(), AntiPluralityVoting(), VotingForTwo(), Sequential()]
+    votingOptions = [BordaVoting(), PluralityVoting(
+    ), AntiPluralityVoting(), VotingForTwo(), Sequential()]
     print("\nSelect one of the voting schemes below by entering its number id.")
     for scheme in range(len(votingOptions)):
         print(scheme, ":", votingOptions[scheme].toString())
@@ -146,7 +152,8 @@ def inputVotingScheme():
     while not (votingSchemeChoice in "01234" or len(votingSchemeChoice) == 0):
         votingSchemeChoice = input(">> ")
 
-    if len(votingSchemeChoice) == 0: votingSchemeChoice = randrange(5)
+    if len(votingSchemeChoice) == 0:
+        votingSchemeChoice = randrange(5)
     votingScheme = votingOptions[int(votingSchemeChoice)]
     print("\nVoting scheme selected is", votingScheme.toString())
     return votingScheme
@@ -165,14 +172,17 @@ def inputHappiness():
     if len(happinessChoice) == 0:
         happinessChoice = randrange(3)
     happinessChoice = int(happinessChoice)
-    if happinessChoice == 0: print("\nHappiness function selected uses a steep curve.")
-    if happinessChoice == 1: print("\nHappiness function selected uses a linear curve.")
-    if happinessChoice == 2: print("\nHappiness function selected uses a middle curve.")
+    if happinessChoice == 0:
+        print("\nHappiness function selected uses a steep curve.")
+    if happinessChoice == 1:
+        print("\nHappiness function selected uses a linear curve.")
+    if happinessChoice == 2:
+        print("\nHappiness function selected uses a middle curve.")
     return happinessChoice
 
 
 def createCommands(votingScheme):
-    options = "help0123456"
+    options = "help01234568"
     commands = "\nSelect one of the commands below by selecting its number id."
     commands += "\n0 : Quit the program."
     commands += "\n1 : Print the social ranking of this scenario."
@@ -181,6 +191,7 @@ def createCommands(votingScheme):
     commands += "\n4 : Print the happiness of some voter or all voters."
     commands += "\n5 : Print the overall happiness of this scenario."
     commands += "\n6 : Print the risk of strategic voting for some voter."
+    commands += "\n8 : Print the output scores of this scenario."
     if votingScheme.toString() == "Sequential Voting Scheme":
         options += "7"
         commands += "\n7 : Update the voting agenda."
@@ -203,7 +214,8 @@ def main():
     command = input("\n>> ")
     while command != "0":
         if command not in options:
-            print("Command", command, "is not supported. Use <help> for a list of commands.")
+            print("Command", command,
+                  "is not supported. Use <help> for a list of commands.")
 
         if command == "help":
             print(commands)
@@ -226,17 +238,21 @@ def main():
                 print("The strategic voting options for this voter are :")
                 print(
                     "[newVoterRanking, newOutcome, trueHappiness, newHappiness, newOverallHappiness, trueOverallHappiness]")
-                strategies = strategicVoting(voter, preferences, votingScheme, happinessChoice)
-                for s in strategies: print(s)
+                strategies = strategicVoting(
+                    voter, preferences, votingScheme, happinessChoice)
+                for s in strategies:
+                    print(s)
 
         if command == "4":
-            print("Enter the number id of the voter you want to use. Enter <all> to get a list of all.")
+            print(
+                "Enter the number id of the voter you want to use. Enter <all> to get a list of all.")
             voter = input(">> ")
             outcome = votingScheme.outcome(preferences)
             if voter == "all":
                 h = []
                 for v in preferences.columns:
-                    h.append(happiness(v, preferences, outcome, happinessChoice))
+                    h.append(happiness(v, preferences,
+                             outcome, happinessChoice))
                 print(preferences.columns.tolist())
                 print(h)
             else:
@@ -253,12 +269,14 @@ def main():
             print(overallHappiness(preferences, outcome, happinessChoice))
 
         if command == "6":
-            print("Enter the number id of the voter you want to use. Enter <all> to get a list of all.")
+            print(
+                "Enter the number id of the voter you want to use. Enter <all> to get a list of all.")
             voter = input(">> ")
             if voter == "all":
                 h = []
                 for v in preferences.columns:
-                    h .append(risk(v, preferences, votingScheme, happinessChoice))
+                    h .append(
+                        risk(v, preferences, votingScheme, happinessChoice))
                 print(preferences.columns.tolist())
                 print(h)
             else:
@@ -269,15 +287,20 @@ def main():
                     print("The risk of strategic voting for", voter, "is :")
                     print(risk(voter, preferences, votingScheme, happinessChoice))
 
+        if command == "8":
+            print("Output score of this scenario is :")
+            print(votingScheme.outcomeCalculation(preferences))
+
         if command == "7":
             if type(votingScheme) is Sequential:
                 print("Enter the new agenda as <<A, B, C, D>>.")
                 agenda = input(">> ")
                 check = votingScheme.setAgenda(agenda.split(', '))
-                if check :
+                if check:
                     print("Voting agenda set to:", votingScheme.agenda)
             else:
-                print("Command", command, "is not supported. Use <help> for a list of commands.")
+                print("Command", command,
+                      "is not supported. Use <help> for a list of commands.")
 
         command = input("\n>> ")
 
