@@ -21,7 +21,7 @@ def happiness(voter: str, preferences, outcome, happinessMetric: int) -> float:
     winnerRank = preferencesVoter.index(outcome)
 
     if happinessMetric == 0:  # steep curve and is halved for every step of removal.
-        return nrOutcomes / ((2 ** winnerRank) * nrOutcomes)
+        return 1 / (2 ** winnerRank)
     if happinessMetric == 1:  # linear curve
         return (nrOutcomes - winnerRank) / nrOutcomes
     if happinessMetric == 2:  # middle curve. First step is halved, the rest linear.
