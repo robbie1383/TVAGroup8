@@ -289,7 +289,7 @@ def main():
 
         if command == "8":
             print("Output score of this scenario is :")
-            print(votingScheme.outcomeCalculation(preferences))
+            print(votingScheme.outputScores(preferences))
 
         if command == "7":
             if type(votingScheme) is Sequential:
