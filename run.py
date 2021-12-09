@@ -8,7 +8,7 @@ from VotingSchemes.AntiPluralityVoting import AntiPluralityVoting
 from VotingSchemes.Sequential import Sequential
 
 
-def happiness(voter: str, preferences, outcome, happinessMetric: int) -> float:
+def happiness(voter: str, preferences, outcome: str, happinessMetric: int) -> float:
     """
     :param voter: string representing the voted, eg : "Voter 1"
     :param preferences: pandas dataframe with the voting preferences
@@ -20,18 +20,17 @@ def happiness(voter: str, preferences, outcome, happinessMetric: int) -> float:
     nrOutcomes = len(preferencesVoter)
     winnerRank = preferencesVoter.index(outcome)
 
-    if happinessMetric == 0:  # steep curve and is halved for every step of removal.
+    if winnerRank == 0:
+        return 1
+    if happinessMetric == 0:  # steep curve
         return 1 / (2 ** winnerRank)
     if happinessMetric == 1:  # linear curve
         return (nrOutcomes - winnerRank) / nrOutcomes
-    if happinessMetric == 2:  # middle curve. First step is halved, the rest linear.
-        if winnerRank == 0:
-            return (nrOutcomes * 0.5 + (nrOutcomes - winnerRank) * 0.5) / nrOutcomes
-        else:
-            return ((nrOutcomes - winnerRank) * 0.5) / nrOutcomes
+    if happinessMetric == 2:  # combined curve
+        return (nrOutcomes - winnerRank) / (2 * nrOutcomes)
 
 
-def overallHappiness(preferences, outcome, happinessMetric: int) -> float:
+def overallHappiness(preferences, outcome: str, happinessMetric: int) -> float:
     """
     :param preferences: pandas dataframe with the voting preferences
     :param outcome: a candidate that won some election
@@ -51,11 +50,8 @@ def strategicVoting(voter: str, preferences, votingScheme, happinessMetric: int)
     :param votingScheme: initialized voting scheme
     :param happinessMetric: happiness function calculation scheme
     :return: a strategic voting option of the form :
-             [newVoterRanking, outcome, trueHappiness, newHappiness,
-                 trueOverallHappiness, newOverallHappiness]
+             [newVoterRanking, outcome, trueHappiness, newHappiness, trueOverallHappiness, newOverallHappiness]
     """
-    old_outcome = votingScheme.outcome(
-        preferences)  # get old outcome and keep it
     voterRanking = preferences[voter]
     permutations = list(itertools.permutations(list(voterRanking)))
     strategies = []
@@ -64,15 +60,15 @@ def strategicVoting(voter: str, preferences, votingScheme, happinessMetric: int)
         newPreferences[voter] = alternative
         outcome = votingScheme.outcome(newPreferences)
         option = [alternative, outcome,
-                  happiness(voter, preferences, old_outcome, happinessMetric),
                   happiness(voter, preferences, outcome, happinessMetric),
-                  overallHappiness(preferences, old_outcome, happinessMetric),
-                  overallHappiness(preferences, outcome, happinessMetric)]
+                  happiness(voter, newPreferences, outcome, happinessMetric),
+                  overallHappiness(preferences, outcome, happinessMetric),
+                  overallHappiness(newPreferences, outcome, happinessMetric)]
         strategies.append(option)
     return strategies
 
 
-def risk(voter: str, preferences, votingScheme, happinessMetric: int, ):
+def risk(voter: str, preferences, votingScheme, happinessMetric: int):
     """
     :param voter: string representing the voted, eg : "Voter 1"
     :param preferences: pandas dataframe with the voting preferences
@@ -80,20 +76,22 @@ def risk(voter: str, preferences, votingScheme, happinessMetric: int, ):
     :param happinessMetric: happiness function calculation scheme
     :return:
     """
-    overall_risk_count = 0
-    overall_strategy_voting_options = 0
-    strategies = strategicVoting(
-        voter, preferences, votingScheme, happinessMetric)
+    manipulated = 0
+    originalOutcome = votingScheme.outcome(preferences)
+    originalHappiness = happiness(voter, preferences, originalOutcome, happinessMetric)
+    originalOverallHappiness = overallHappiness(preferences, originalOutcome, happinessMetric)
+    strategies = strategicVoting(voter, preferences, votingScheme, happinessMetric)
     for strategy in strategies:
-        overall_strategy_voting_options += 1
-        # risk happen if the new overall happiness reduced by the strategy voting while the new happiness of
-        # voter who takes strategicVoting increase
-        if (strategy[4] > strategy[5]) & (strategy[2] < strategy[3]):
-            overall_risk_count += 1
-    return overall_risk_count / overall_strategy_voting_options
+        if (strategy[4] < originalOverallHappiness) & (strategy[2] > originalHappiness):
+            manipulated += 1
+    return manipulated / len(strategies)
 
 
 def inputChecker(preferences):
+    """
+    :param preferences: pandas dataframe with the voting preferences
+    :return: boolean value of whether the election is correct
+    """
     n = len(preferences.index)
     options = [chr(ord("A") + i) for i in range(n)]
     for column in preferences.columns:
@@ -117,7 +115,9 @@ def inputChecker(preferences):
 
 
 def inputPreferences():
-    # Read the input from the .csv file.
+    """
+    :return: pandas dataframe with the voting preferences
+    """
     correct = False
     while not correct:
         print("This software uses .csv files as input. Please enter the name of your file as <name>.csv below.")
@@ -137,9 +137,10 @@ def inputPreferences():
 
 
 def inputVotingScheme():
-    # Choose the voting scheme
-    votingOptions = [BordaVoting(), PluralityVoting(
-    ), AntiPluralityVoting(), VotingForTwo(), Sequential()]
+    """
+    :return: initialized voting scheme
+    """
+    votingOptions = [BordaVoting(), PluralityVoting(), AntiPluralityVoting(), VotingForTwo(), Sequential()]
     print("\nSelect one of the voting schemes below by entering its number id.")
     for scheme in range(len(votingOptions)):
         print(scheme, ":", votingOptions[scheme].toString())
@@ -156,7 +157,9 @@ def inputVotingScheme():
 
 
 def inputHappiness():
-    # Choose happiness function
+    """
+    :return: int representing happiness curve
+    """
     print("\nSelect what kind of happiness function you want to use by entering its number id.")
     print("0 : Steep curve happiness : ")
     print("1 : Linear curve happiness : ")
@@ -178,7 +181,12 @@ def inputHappiness():
 
 
 def createCommands(votingScheme):
-    options = "help01234568"
+    """
+    :param votingScheme: initialized voting scheme
+    :return: a string containing all option inputs
+             a string containing the explanation of all commands
+    """
+    options = "help0123456"
     commands = "\nSelect one of the commands below by selecting its number id."
     commands += "\n0 : Quit the program."
     commands += "\n1 : Print the social ranking of this scenario."
@@ -187,7 +195,6 @@ def createCommands(votingScheme):
     commands += "\n4 : Print the happiness of some voter or all voters."
     commands += "\n5 : Print the overall happiness of this scenario."
     commands += "\n6 : Print the risk of strategic voting for some voter."
-    commands += "\n8 : Print the output scores of this scenario."
     if votingScheme.toString() == "Sequential Voting Scheme":
         options += "7"
         commands += "\n7 : Update the voting agenda."
@@ -232,8 +239,7 @@ def main():
                 print("This voter does not exist.")
             else:
                 print("The strategic voting options for this voter are :")
-                print(
-                    "newVoterRanking, newOutcome, trueHappiness, newHappiness, trueOverallHappiness, newOverallHappiness")
+                print("newVoterRanking, newOutcome, trueHappiness, newHappiness, trueOverallHappiness, newOverallHappiness")
                 strategies = strategicVoting(
                     voter, preferences, votingScheme, happinessChoice)
                 for s in strategies:
@@ -282,10 +288,6 @@ def main():
                 else:
                     print("The risk of strategic voting for", voter, "is :")
                     print(risk(voter, preferences, votingScheme, happinessChoice))
-
-        if command == "8":
-            print("Output score of this scenario is :")
-            print(votingScheme.outputScores(preferences))
 
         if command == "7":
             if type(votingScheme) is Sequential:

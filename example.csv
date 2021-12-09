@@ -1,6 +1,4 @@
-Voter 1,Voter 2,Voter 3,Voter 4
-A,B,D,C
-B,A,C,D
-D,D,A,B
-C,C,B,A
-
+Voter 1,Voter 2,Voter 3,Voter 4,Voter 5
+A,B,C,B,A
+C,A,B,C,B
+B,C,A,A,C

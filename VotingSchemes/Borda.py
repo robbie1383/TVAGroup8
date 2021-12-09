@@ -6,8 +6,20 @@ import numpy as np
 
 class BordaVoting:
 
-    # Compute the social ranking of candidates, eg : [A, B, C, D]
-    def outputScores(self, preferences: pd.DataFrame) -> [str]:
+    def outcomeRanking(self, preferences: pd.DataFrame) -> [str]:
+        """
+        :param preferences: preferences: pandas dataframe with the voting preferences
+        :return: social ranking of candidates based on preferences
+        """
+        ranking = self.outputScores(preferences)
+        outcome_rank = list(ranking.keys())
+        return outcome_rank
+
+    def outputScores(self, preferences: pd.DataFrame):
+        """
+        :param preferences: preferences: pandas dataframe with the voting preferences
+        :return: a dictionary containing the scores of all candidates
+        """
         ranking = {}
         info = np.array(preferences)
         for num_candidates in range(len(info)):
@@ -19,13 +31,11 @@ class BordaVoting:
         ranking = dict(sorted(ranking.items(), key=operator.itemgetter(1), reverse=True))
         return ranking
 
-    def outcomeRanking(self, preferences: pd.DataFrame) -> [str]:
-        ranking = self.outputScores(preferences)
-        outcome_rank = list(ranking.keys())
-        return outcome_rank
-    
-    # Compute the final outcome of the vote, eg : A
     def outcome(self, preferences: pd.DataFrame) -> str:
+        """
+        :param preferences: preferences: pandas dataframe with the voting preferences
+        :return: a string containing the winning candidate
+        """
         return self.outcomeRanking(preferences)[0]
 
     def toString(self):

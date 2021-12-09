@@ -6,22 +6,27 @@ from random import randrange
 class Sequential:
     agenda = []
 
-    def setAgenda(self, agenda : [str]):
-        # Set the agenda
-        if len(pd.Series(agenda)[pd.Series(agenda).duplicated()].values) > 0 :
+    def setAgenda(self, agenda: [str]):
+        if len(pd.Series(agenda)[pd.Series(agenda).duplicated()].values) > 0:
             print("Agenda contains duplicates")
             return False
         self.agenda = agenda
         return True
 
     def randomAgenda(self, preferences: pd.DataFrame) -> [str]:
-        # Create a random agenda from the candidates specified in the preferences
+        """
+        :param preferences: preferences: pandas dataframe with the voting preferences
+        :return: a random agenda from the candidates specified in the preferences
+        """
         candidates = preferences["Voter 1"]
         permutations = list(itertools.permutations(list(candidates)))
         return permutations[randrange(len(permutations))]
 
     def outcome(self, preferences: pd.DataFrame) -> str:
-        # Compute the final outcome of the vote, eg : A
+        """
+        :param preferences: preferences: pandas dataframe with the voting preferences
+        :return: a string containing the winning candidate
+        """
         if len(self.agenda) == 0: self.setAgenda(self.randomAgenda(preferences))
         previous = self.agenda[0]
         for round in range(1, len(self.agenda)):
@@ -40,8 +45,20 @@ class Sequential:
         return previous
 
     def outcomeRanking(self, preferences: pd.DataFrame) -> [str]:
+        """
+        :param preferences: preferences: pandas dataframe with the voting preferences
+        :return: social ranking of candidates based on preferences
+        """
         print("Sequential Voting does not support social ranking computations. Only the winner will be displayed.")
-        return [self.outcome(preferences)]
+        return self.outcome(preferences)
+
+    def outputScores(self, preferences: pd.DataFrame):
+        """
+        :param preferences: preferences: pandas dataframe with the voting preferences
+        :return: a dictionary containing the scores of all candidates
+        """
+        print("Sequential Voting does not support social ranking computations. Only the winner will be displayed.")
+        return self.outcome(preferences)
 
     def toString(self):
         return "Sequential Voting Scheme"
