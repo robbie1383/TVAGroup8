@@ -163,7 +163,7 @@ def inputHappiness():
     print("\nSelect what kind of happiness function you want to use by entering its number id.")
     print("0 : Steep curve happiness : ")
     print("1 : Linear curve happiness : ")
-    print("2 : Middle curve happiness : ")
+    print("2 : Combined curve happiness : ")
     print("If you wish to select a random curve, press Enter.")
     happinessChoice = "start"
     while not (happinessChoice in "012" or len(happinessChoice) == 0):
@@ -176,7 +176,7 @@ def inputHappiness():
     if happinessChoice == 1:
         print("\nHappiness function selected uses a linear curve.")
     if happinessChoice == 2:
-        print("\nHappiness function selected uses a middle curve.")
+        print("\nHappiness function selected uses a combined curve.")
     return happinessChoice
 
 
